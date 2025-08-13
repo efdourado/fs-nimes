@@ -3,11 +3,10 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
+import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,7 +18,7 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+export function LoginForm({ onSwitch }: { onSwitch: () => void }) {
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
   const {
@@ -33,24 +32,23 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormValues) => {
     setApiError(null);
     try {
-      const response = await axios.post('http://localhost:3000/auth/login', data);
-      
+      const response = await api.post('/auth/login', data);
       localStorage.setItem('accessToken', response.data.accessToken);
-
       router.push('/dashboard');
+      router.refresh();
     } catch (err: any) {
-      setApiError(err.response?.data?.message || 'Erro ao fazer login. Tente novamente.');
+      setApiError(err.response?.data?.message || 'Erro ao fazer login.');
   } };
 
   return (
-    <div className="w-full max-w-md space-y-6 rounded-xl border bg-card p-6 shadow-sm sm:p-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Acesse sua conta</h1>
+    <div className="mx-auto w-full max-w-sm">
+      <div className="text-center md:text-left mb-8">
+        <h2 className="text-2xl font-bold tracking-tight">Acesse sua conta</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Não tem uma conta?{' '}
-          <Link href="/register" className="font-medium text-primary underline-offset-4 hover:underline">
+          <button type="button" onClick={onSwitch} className="font-medium text-primary underline-offset-4 hover:underline">
             Crie uma agora
-          </Link>
+          </button>
         </p>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -64,9 +62,7 @@ export default function LoginPage() {
           <Input id="password" type="password" placeholder="••••••••" {...register('password')} />
           {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
-
         {apiError && <p className="text-sm font-medium text-destructive">{apiError}</p>}
-
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? 'Entrando...' : 'Entrar'}
         </Button>

@@ -25,6 +25,36 @@ A arquitetura do projeto é um monorepo gerenciado com `pnpm`, contendo:
     -   Banco de Dados: **PostgreSQL**
     -   Autenticação: **Passport.js** (com estratégia JWT)
 
+---
+
+## Telas da Aplicação (Mapa de Rotas)
+
+Aqui está a estrutura de navegação e as principais telas da plataforma.
+
+### Rotas Públicas (Usuário Deslogado)
+
+-   `/`: **Landing Page**
+    -   Apresentação da plataforma (Hero Section), com chamadas para cadastro e login.
+-   `/login`: **Página de Login**
+    -   Formulário para que usuários existentes acessem suas contas.
+-   `/register`: **Página de Cadastro**
+    -   Formulário para novos usuários criarem uma conta.
+
+### Rotas Protegidas (Usuário Logado)
+
+O acesso a estas rotas requer autenticação.
+
+-   `/dashboard`: **Dashboard Principal**
+    -   Página inicial do usuário logado. Exibe um resumo do progresso e links rápidos.
+-   `/study-blocks`: **Listagem dos Blocos de Estudo**
+    -   Exibe todos os blocos de estudo disponíveis, com seu status (bloqueado, desbloqueado, completo) e progresso.
+-   `/study-blocks/[blockId]`: **Página de Estudo de um Bloco**
+    -   Interface principal onde o usuário responde às questões de um bloco específico.
+-   `/profile`: **Página de Perfil do Usuário**
+    -   Permite ao usuário visualizar e editar suas informações pessoais, como nome, bio e futuramente a foto.
+
+---
+
 ## Como Rodar o Projeto
 
 Siga os passos abaixo para configurar e rodar o ambiente de desenvolvimento local.

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { api } from '@/lib/api';
 import { BlockData, StudyBlockCard } from '@/components/study/StudyBlockCard';
 
 export default function StudyBlocksPage() {
@@ -18,7 +18,7 @@ export default function StudyBlocksPage() {
       }
 
       try {
-        const { data } = await axios.get('http://localhost:3000/study-blocks', {
+        const { data } = await api.get('/study-blocks', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBlocks(data);

@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import { api } from '@/lib/api';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -43,7 +44,7 @@ export default function ProfilePage() {
       if (!token) return;
 
       try {
-        const { data } = await axios.get('http://localhost:3000/users/me', {
+        const { data } = await api.get('/users/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(data);
@@ -53,14 +54,14 @@ export default function ProfilePage() {
       } finally {
         setIsLoading(false);
     } };
-
+    
     fetchProfile();
   }, [reset]);
   
   const onSubmit = async (data: ProfileFormValues) => {
     const token = localStorage.getItem('accessToken');
     try {
-      const updatedUser = await axios.put('http://localhost:3000/users/me', data, {
+      const updatedUser = await api.put('/users/me', data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(updatedUser.data);
@@ -84,7 +85,6 @@ export default function ProfilePage() {
           <p className="text-muted-foreground">{user.email}</p>
         </div>
       </div>
-
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-md space-y-4">
         <div className="grid gap-2">
           <Label htmlFor="name">Nome</Label>

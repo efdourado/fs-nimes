@@ -3,11 +3,9 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useState } from 'react';
 
+import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,8 +18,7 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export default function RegisterPage() {
-  const router = useRouter();
+export function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
   const [apiError, setApiError] = useState<string | null>(null);
   const {
     register,
@@ -34,37 +31,37 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormValues) => {
     setApiError(null);
     try {
-      await axios.post('http://localhost:3000/auth/register', data);
-      router.push('/login');
+      await api.post('/auth/register', data);
+      onSwitch();
     } catch (err: any) {
-      setApiError(err.response?.data?.message || 'Erro ao criar conta. Tente novamente.');
+      setApiError(err.response?.data?.message || 'Erro ao criar conta.');
   } };
 
   return (
-    <div className="w-full max-w-md space-y-6 rounded-xl border bg-card p-6 shadow-sm sm:p-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Crie sua conta</h1>
+    <div className="mx-auto w-full max-w-sm">
+      <div className="text-center md:text-left mb-8">
+        <h2 className="text-2xl font-bold tracking-tight">Crie sua conta</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Já tem uma conta?{' '}
-          <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+          <button type="button" onClick={onSwitch} className="font-medium text-primary underline-offset-4 hover:underline">
             Faça login
-          </Link>
+          </button>
         </p>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid gap-2">
-          <Label htmlFor="name">Nome Completo</Label>
-          <Input id="name" placeholder="Seu nome" {...register('name')} />
+          <Label htmlFor="reg-name">Nome Completo</Label>
+          <Input id="reg-name" placeholder="Seu nome" {...register('name')} />
           {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="email">E-mail</Label>
-          <Input id="email" type="email" placeholder="email@exemplo.com" {...register('email')} />
+          <Label htmlFor="reg-email">E-mail</Label>
+          <Input id="reg-email" type="email" placeholder="email@exemplo.com" {...register('email')} />
           {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="password">Senha</Label>
-          <Input id="password" type="password" placeholder="••••••••" {...register('password')} />
+          <Label htmlFor="reg-password">Senha</Label>
+          <Input id="reg-password" type="password" placeholder="••••••••" {...register('password')} />
           {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
 
