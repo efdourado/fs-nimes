@@ -6,7 +6,6 @@ export class StudyBlocksService {
   constructor(private prisma: PrismaService) {}
 
   async findAllForUser(userId: string) {
-    // Busca todos os blocos em ordem
     const allBlocks = await this.prisma.studyBlock.findMany({
       orderBy: { order: 'asc' },
       include: {

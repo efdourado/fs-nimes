@@ -12,7 +12,9 @@ export type BlockData = {
     unlocked: boolean;
     completed: boolean;
     correctAnswers: number;
-}; };
+    wrongAnswers: number;
+  };
+};
 
 interface StudyBlockCardProps {
   block: BlockData;
