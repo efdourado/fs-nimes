@@ -32,18 +32,20 @@ export function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
     setApiError(null);
     try {
       await api.post('/auth/register', data);
-      onSwitch();
+      alert('Conta criada com sucesso! Agora você pode fazer o login.');
+      onSwitch(); // Muda para a tela de login após sucesso
     } catch (err: any) {
       setApiError(err.response?.data?.message || 'Erro ao criar conta.');
-  } };
+    }
+  };
 
   return (
-    <div className="mx-auto w-full max-w-sm">
+    <div className="mx-auto w-full max-w-sm px-4">
       <div className="text-center md:text-left mb-8">
         <h2 className="text-2xl font-bold tracking-tight">Crie sua conta</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Já tem uma conta?{' '}
-          <button type="button" onClick={onSwitch} className="font-medium text-primary underline-offset-4 hover:underline">
+          <button type="button" onClick={onSwitch} className="font-medium text-primary underline-offset-4 hover:underline focus:outline-none">
             Faça login
           </button>
         </p>
@@ -72,4 +74,5 @@ export function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
         </Button>
       </form>
     </div>
-); }
+  );
+}

@@ -35,18 +35,19 @@ export function LoginForm({ onSwitch }: { onSwitch: () => void }) {
       const response = await api.post('/auth/login', data);
       localStorage.setItem('accessToken', response.data.accessToken);
       router.push('/dashboard');
-      router.refresh();
+      router.refresh(); 
     } catch (err: any) {
       setApiError(err.response?.data?.message || 'Erro ao fazer login.');
-  } };
+    }
+  };
 
   return (
-    <div className="mx-auto w-full max-w-sm">
+    <div className="mx-auto w-full max-w-sm px-4">
       <div className="text-center md:text-left mb-8">
         <h2 className="text-2xl font-bold tracking-tight">Acesse sua conta</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Não tem uma conta?{' '}
-          <button type="button" onClick={onSwitch} className="font-medium text-primary underline-offset-4 hover:underline">
+          <button type="button" onClick={onSwitch} className="font-medium text-primary underline-offset-4 hover:underline focus:outline-none">
             Crie uma agora
           </button>
         </p>
@@ -68,4 +69,5 @@ export function LoginForm({ onSwitch }: { onSwitch: () => void }) {
         </Button>
       </form>
     </div>
-); }
+  );
+}
