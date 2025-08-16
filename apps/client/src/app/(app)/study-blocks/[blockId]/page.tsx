@@ -66,6 +66,10 @@ export default function StudySessionPage() {
       setFeedback(data);
     } catch (error) {
       console.error('Falha ao submeter resposta', error);
+
+      if ((error as any).response?.data?.message) {
+        alert((error as any).response.data.message);
+      }
     } finally {
       setIsSubmitting(false);
   } };
@@ -79,8 +83,8 @@ export default function StudySessionPage() {
       router.push(`/study-blocks/${blockId}/complete`);
   } };
 
-  if (isLoading) return <p>Carregando questões...</p>;
-  if (questions.length === 0) return <p>Nenhuma questão encontrada para este bloco.</p>;
+  if (isLoading) return <div className="flex justify-center items-center h-full"><p>Carregando questões...</p></div>;
+  if (questions.length === 0) return <div className="flex justify-center items-center h-full"><p>Nenhuma questão encontrada para este bloco.</p></div>;
 
   const currentQuestion = questions[currentQuestionIndex];
   const isAnswered = feedback !== null;

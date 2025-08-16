@@ -5,6 +5,8 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../core/prisma.service';
+import { CreateQuestionDto, UpdateQuestionDto } from './dto/question.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class QuestionsService {
@@ -19,16 +21,13 @@ export class QuestionsService {
         type: true,
         difficulty: true,
         options: true,
-      },
-    });
-  }
+  }, }); }
 
   async submitAnswer(
     userId: string,
     questionId: string,
     userAnswer: string | boolean,
   ) {
-    // 1. Busca a questão e seu bloco associado
     const question = await this.prisma.question.findUnique({
       where: { id: questionId },
       include: { block: true },
@@ -38,7 +37,6 @@ export class QuestionsService {
       throw new NotFoundException('Questão não encontrada.');
     }
 
-    // 2. Garante que o usuário tem acesso a este bloco
     const progress = await this.prisma.userProgress.findUnique({
       where: { userId_blockId: { userId, blockId: question.blockId } },
     });
@@ -47,7 +45,6 @@ export class QuestionsService {
       throw new UnauthorizedException('Você não tem acesso a este bloco.');
     }
 
-    // 3. [CORREÇÃO] Impede que a mesma questão seja respondida múltiplas vezes
     const existingAnswer = await this.prisma.userAnswer.findUnique({
       where: { userId_questionId: { userId, questionId } },
     });
@@ -56,26 +53,21 @@ export class QuestionsService {
       throw new ConflictException('Você já respondeu esta questão.');
     }
 
-    // 4. [CORREÇÃO] Valida a resposta do usuário de forma correta
     let isCorrect = false;
     if (question.type === 'CERTO_ERRADO') {
-      // Compara a string do frontend com o booleano do banco de dados
       isCorrect = String(userAnswer) === String(question.isCorrect);
     } else if (question.type === 'MULTIPLA_ESCOLHA') {
-      const options = question.options as { answer: string };
+      const options = question.options as Prisma.JsonObject;
       isCorrect = userAnswer === options.answer;
     }
 
-    // 5. Registra a resposta individual na tabela UserAnswer
     await this.prisma.userAnswer.create({
       data: {
         userId,
         questionId,
         isCorrect,
-      },
-    });
+    }, });
 
-    // 6. Atualiza o progresso geral do bloco
     const userProgress = await this.prisma.userProgress.upsert({
       where: { userId_blockId: { userId, blockId: question.blockId } },
       create: {
@@ -94,12 +86,8 @@ export class QuestionsService {
         block: {
           include: {
             _count: { select: { questions: true } },
-          },
-        },
-      },
-    });
+    }, }, }, });
 
-    // 7. Verifica se o bloco foi concluído e desbloqueia o próximo se necessário
     const totalAnswered = userProgress.correct + userProgress.wrong;
     const totalQuestionsInBlock = userProgress.block._count.questions;
 
@@ -110,7 +98,7 @@ export class QuestionsService {
         data: { completed: true },
       });
 
-      if (accuracy >= 0.7) { // Critério de aprovação de 70%
+      if (accuracy >= 0.7) {
         const nextBlock = await this.prisma.studyBlock.findUnique({
           where: { order: userProgress.block.order + 1 },
         });
@@ -120,15 +108,81 @@ export class QuestionsService {
             where: { userId_blockId: { userId, blockId: nextBlock.id } },
             create: { userId, blockId: nextBlock.id, unlocked: true },
             update: { unlocked: true },
-          });
-        }
-      }
-    }
+    }); } } }
 
-    // 8. Retorna o feedback para o frontend
     return {
       correct: isCorrect,
       explanation: question.explanation,
-    };
-  }
-}
+  }; }
+
+  async create(createQuestionDto: CreateQuestionDto) {
+    const { blockId, ...questionData } = createQuestionDto;
+
+    const blockExists = await this.prisma.studyBlock.findUnique({
+      where: { id: blockId },
+    });
+    if (!blockExists) {
+      throw new NotFoundException(`Bloco com ID "${blockId}" não encontrado.`);
+    }
+
+    return this.prisma.question.create({
+      data: {
+        ...questionData,
+        
+        options:
+          questionData.options as Prisma.InputJsonValue | undefined,
+        block: {
+          connect: { id: blockId },
+  }, }, }); }
+
+  async update(questionId: string, updateQuestionDto: UpdateQuestionDto) {
+    await this.prisma.question.findUniqueOrThrow({
+      where: { id: questionId },
+    }).catch(() => {
+        throw new NotFoundException('Questão não encontrada.');
+    });
+
+    return this.prisma.question.update({
+      where: { id: questionId },
+      data: {
+        ...updateQuestionDto,
+        options:
+          updateQuestionDto.options as Prisma.InputJsonValue | undefined,
+  }, }); }
+
+  async remove(questionId: string) {
+    await this.prisma.question.findUniqueOrThrow({
+        where: { id: questionId },
+    }).catch(() => {
+        throw new NotFoundException('Questão não encontrada.');
+    });
+
+    await this.prisma.question.delete({
+      where: { id: questionId },
+    });
+
+    return { message: 'Questão removida com sucesso.' };
+  } 
+  
+  async findAll() {
+    return this.prisma.question.findMany({
+      orderBy: {
+        block: {
+          order: 'asc',
+        },
+      },
+      include: {
+        block: {
+          select: {
+            title: true,
+  }, }, }, }); }
+
+  async findOne(questionId: string) {
+    const question = await this.prisma.question.findUnique({
+      where: { id: questionId },
+    });
+    if (!question) {
+      throw new NotFoundException('Questão não encontrada.');
+    }
+    return question;
+} }

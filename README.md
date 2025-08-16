@@ -35,10 +35,8 @@ Aqui está a estrutura de navegação e as principais telas da plataforma.
 
 -   `/`: **Landing Page**
     -   Apresentação da plataforma (Hero Section), com chamadas para cadastro e login.
--   `/login`: **Página de Login**
-    -   Formulário para que usuários existentes acessem suas contas.
--   `/register`: **Página de Cadastro**
-    -   Formulário para novos usuários criarem uma conta.
+-   `/auth`: **Página de Autenticação**
+    -   Interface unificada para Login e Cadastro de usuários.
 
 ### Rotas Protegidas (Usuário Logado)
 
@@ -47,11 +45,15 @@ O acesso a estas rotas requer autenticação.
 -   `/dashboard`: **Dashboard Principal**
     -   Página inicial do usuário logado. Exibe um resumo do progresso e links rápidos.
 -   `/study-blocks`: **Listagem dos Blocos de Estudo**
-    -   Exibe todos os blocos de estudo disponíveis, com seu status (bloqueado, desbloqueado, completo) e progresso.
+    -   Exibe todos os blocos de estudo disponíveis, com seu status e progresso.
 -   `/study-blocks/[blockId]`: **Página de Estudo de um Bloco**
     -   Interface principal onde o usuário responde às questões de um bloco específico.
+-   `/study-blocks/[blockId]/complete`: **Página de Conclusão de Bloco**
+    -   Exibe os resultados do usuário após finalizar um bloco.
 -   `/profile`: **Página de Perfil do Usuário**
-    -   Permite ao usuário visualizar e editar suas informações pessoais, como nome, bio e futuramente a foto.
+    -   Permite ao usuário visualizar e editar suas informações pessoais.
+-   `/admin/questions`: **Gerenciamento de Questões**
+    -   Interface para administradores listarem, criarem, editarem e deletarem questões.
 
 ---
 
@@ -93,7 +95,7 @@ Siga os passos abaixo para configurar e rodar o ambiente de desenvolvimento loca
 6.  **Popule o Banco com Dados Iniciais (Opcional, mas Recomendado):**
     Este comando insere os blocos de estudo e questões iniciais.
     ```bash
-    pnpm --filter server exec pnpm seed
+    pnpm --filter server exec prisma db seed
     ```
 
 7.  **Inicie os Servidores:**
@@ -121,22 +123,24 @@ Siga os passos abaixo para configurar e rodar o ambiente de desenvolvimento loca
 -   [x] **Conteúdo Inicial:** Script de *seeding* para popular o banco com blocos e questões.
 -   [x] **Perfil de Usuário:** Visualização e edição de nome e bio.
 -   [x] **Modo Noturno:** Implementação de tema claro/escuro com `next-themes`.
--   [x] **Listagem de Blocos de Estudo:** Página que exibe os blocos com status (bloqueado, desbloqueado, completo) e progresso.
-
-### ⏳ Em Andamento
-
--   [ ] **Página de Estudo:** Interface para o usuário responder as questões de um bloco específico.
--   [ ] **Feedback de Respostas:** Lógica para mostrar se a resposta está certa ou errada e exibir a explicação.
--   [ ] **Sistema de Progressão:** Lógica no backend para desbloquear o próximo bloco após atingir o critério de acertos.
+-   [x] **Fluxo de Estudo Completo:**
+    -   [x] Listagem de Blocos com status (bloqueado, desbloqueado, completo) e progresso.
+    -   [x] Interface para responder questões.
+    -   [x] Feedback de respostas (certo/errado com explicação).
+    -   [x] Sistema de progressão e desbloqueio de novos blocos.
+    -   [x] Página de conclusão de bloco com resultados.
+-   [x] **Gerenciamento de Questões (Admin):**
+    -   [x] Interface para listar, criar, editar e deletar questões.
 
 ### 🎯 Próximos Passos
 
--   [ ] **Filtro de Questões:** Permitir que o usuário filtre questões por dificuldade dentro de um bloco.
+-   [ ] **Dashboard de Desempenho:** Aprimorar o dashboard com gráficos e estatísticas detalhadas do progresso do usuário.
 -   [ ] **Simulado Final:** Geração de um simulado cronometrado com questões de todos os blocos.
 -   [ ] **Certificado:** Geração automática de um certificado de conclusão após aprovação no simulado.
+-   [ ] **Filtro de Questões:** Permitir que o usuário filtre questões por dificuldade ou tema.
 -   [ ] **Upload de Foto de Perfil:** Implementar a lógica de upload e armazenamento da imagem do usuário.
 
 ### 🚀 Futuro
 
 -   [ ] **Integração com IA:** Geração de novas questões sob demanda usando uma API de IA.
--   [ ] **Dashboard de Desempenho:** Gráficos e estatísticas detalhadas do progresso do usuário.
+-   [ ] **Sistema de Roles:** Distinguir usuários normais de administradores no backend.

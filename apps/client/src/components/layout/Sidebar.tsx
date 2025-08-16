@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, BookOpen, User, LogOut, Sun, Moon } from 'lucide-react';
+import { Home, BookOpen, User, LogOut, Sun, Moon, Settings } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 
@@ -45,6 +45,7 @@ export function Sidebar() {
             <NavItem href="/dashboard" icon={Home} label="Dashboard" />
             <NavItem href="/study-blocks" icon={BookOpen} label="Blocos de Estudo" />
             <NavItem href="/profile" icon={User} label="Meu Perfil" />
+            <NavItem href="/admin/questions" icon={Settings} label="Admin" /> 
           </nav>
         </div>
         <div className="mt-auto p-4 border-t">
