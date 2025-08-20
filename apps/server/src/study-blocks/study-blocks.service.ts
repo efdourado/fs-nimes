@@ -58,17 +58,23 @@ export class StudyBlocksService {
           where: { userId_blockId: { userId, blockId: previousBlock.id } },
         });
         if (!previousProgress?.completed) {
-          throw new UnauthorizedException('Você precisa completar o bloco anterior primeiro.');
-    } } }
-    
+          throw new UnauthorizedException(
+            'Você precisa completar o bloco anterior primeiro.',
+          );
+        }
+      }
+    }
+
     await this.prisma.userAnswer.deleteMany({
       where: {
         userId,
         question: {
           blockId,
-    }, }, });
+        },
+      },
+    });
 
-    const progress = await this.prisma.userProgress.upsert({
+    await this.prisma.userProgress.upsert({
       where: { userId_blockId: { userId, blockId } },
       create: {
         userId,
@@ -82,7 +88,8 @@ export class StudyBlocksService {
         completed: false,
         correct: 0,
         wrong: 0,
-    }, });
+      },
+    });
 
     return { message: 'Bloco iniciado com sucesso. Você pode começar a responder as questões.' };
 } }

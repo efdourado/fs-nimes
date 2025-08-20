@@ -5,6 +5,20 @@ CREATE TYPE "QuestionType" AS ENUM ('CERTO_ERRADO', 'MULTIPLA_ESCOLHA');
 CREATE TYPE "Difficulty" AS ENUM ('FACIL', 'MEDIO', 'DIFICIL');
 
 -- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "profileImage" TEXT,
+    "bio" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "StudyBlock" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
@@ -23,6 +37,7 @@ CREATE TABLE "Question" (
     "difficulty" "Difficulty" NOT NULL,
     "options" JSONB,
     "isCorrect" BOOLEAN,
+    "answer" TEXT,
     "explanation" TEXT NOT NULL,
 
     CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
@@ -73,6 +88,9 @@ CREATE TABLE "Certificate" (
 
     CONSTRAINT "Certificate_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "StudyBlock_order_key" ON "StudyBlock"("order");

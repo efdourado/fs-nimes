@@ -11,16 +11,18 @@ function NavItem({ href, icon: Icon, label }: { href: string; icon: React.Elemen
   const isActive = pathname === href;
 
   return (
-    <Link href={href} legacyBehavior>
-      <a className={cn(
+    <Link
+      href={href}
+      className={cn(
         "flex items-center gap-3 rounded-lg px-3 py-2 text-slate-900 transition-all hover:bg-slate-100 dark:text-slate-50 dark:hover:bg-slate-800",
         isActive && "bg-slate-100 dark:bg-slate-800"
-      )}>
-        <Icon className="h-4 w-4" />
-        {label}
-      </a>
+      )}
+    >
+      <Icon className="h-4 w-4" />
+      {label}
     </Link>
-); }
+  );
+}
 
 export function Sidebar() {
   const router = useRouter();
@@ -45,25 +47,25 @@ export function Sidebar() {
             <NavItem href="/dashboard" icon={Home} label="Dashboard" />
             <NavItem href="/study-blocks" icon={BookOpen} label="Blocos de Estudo" />
             <NavItem href="/profile" icon={User} label="Meu Perfil" />
-            <NavItem href="/admin/questions" icon={Settings} label="Admin" /> 
+            <NavItem href="/admin/questions" icon={Settings} label="Admin" />
           </nav>
         </div>
         <div className="mt-auto p-4 border-t">
-            <button
-              onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-slate-900 transition-all hover:bg-slate-100 dark:text-slate-50 dark:hover:bg-slate-800"
-            >
-              <LogOut className="h-4 w-4" />
-              Sair
-            </button>
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-slate-900 transition-all hover:bg-slate-100 dark:text-slate-50 dark:hover:bg-slate-800"
+          >
+            <LogOut className="h-4 w-4" />
+            Sair
+          </button>
 
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="flex mt-2 w-full items-center gap-3 rounded-lg px-3 py-2 text-slate-900 transition-all hover:bg-slate-100 dark:text-slate-50 dark:hover:bg-slate-800"
-            >
-              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-            </button>
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="flex mt-2 w-full items-center gap-3 rounded-lg px-3 py-2 text-slate-900 transition-all hover:bg-slate-100 dark:text-slate-50 dark:hover:bg-slate-800"
+          >
+            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+          </button>
         </div>
       </div>
     </div>

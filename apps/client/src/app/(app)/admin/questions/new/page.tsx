@@ -30,14 +30,25 @@ export default function NewQuestionPage() {
     fetchBlocks();
   }, []);
 
+
   const handleSave = async (data: any) => {
     const token = localStorage.getItem('accessToken');
+    const payload = {
+      ...data,
+      options: data.options
+        ? {
+            answer: data.options.answer,
+            options: data.options.options.map((opt: { value: string }) => opt.value),
+          }
+        : undefined,
+    };
+
     try {
-      await api.post('/questions', data, {
+      await api.post('/questions', payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert('Questão criada com sucesso!');
-      router.push('/study-blocks');
+      router.push('/admin/questions');
     } catch (err) {
       console.error('Falha ao criar questão', err);
       alert('Erro ao criar a questão. Verifique o console.');

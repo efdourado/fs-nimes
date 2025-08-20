@@ -40,6 +40,7 @@ model Question {
   difficulty  Difficulty
   options     Json?
   isCorrect   Boolean?
+  answer      String?
   explanation String       @db.Text
   answers     UserAnswer[]
 }

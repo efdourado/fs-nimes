@@ -5,15 +5,14 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Start seeding ...');
 
-  await prisma.question.deleteMany();
-  await prisma.studyBlock.deleteMany();
 
   const block1 = await prisma.studyBlock.create({
     data: {
       title: 'Princípios e Conceitos',
       description: 'Fundamentos do Direito Previdenciário e da Seguridade Social.',
       order: 1,
-  }, });
+    },
+  });
 
   await prisma.question.createMany({
     data: [
@@ -24,6 +23,7 @@ async function main() {
         difficulty: 'FACIL',
         isCorrect: true,
         explanation: 'Correto. Conforme o Art. 194 da Constituição Federal, a Seguridade Social abrange o tripé: Saúde, Previdência e Assistência Social.',
+        answer: null, 
       },
       {
         blockId: block1.id,
@@ -32,6 +32,7 @@ async function main() {
         difficulty: 'MEDIO',
         isCorrect: false,
         explanation: 'Errado. O princípio da universalidade da cobertura refere-se à proteção de todos os riscos sociais (doença, invalidez, morte, etc.), enquanto a universalidade do atendimento refere-se a abranger todas as pessoas. A Previdência Social, no entanto, é contributiva e não cobre todas as pessoas indistintamente (diferente da Saúde).',
+        answer: null,
       },
       {
         blockId: block1.id,
@@ -40,17 +41,21 @@ async function main() {
         difficulty: 'FACIL',
         options: {
           options: ['Seletividade e distributividade', 'Irredutibilidade do valor dos benefícios', 'Caráter democrático da gestão', 'Princípio da rentabilidade'],
-          answer: 'Princípio da rentabilidade',
         },
+        answer: 'Princípio da rentabilidade',
         explanation: 'A rentabilidade é um princípio do mercado financeiro, não da Seguridade Social, que se baseia na solidariedade social.',
-  }, ], });
+        isCorrect: null,
+      },
+    ],
+  });
 
   const block2 = await prisma.studyBlock.create({
     data: {
       title: 'Segurados e Dependentes',
       description: 'Quem são os beneficiários do Regime Geral de Previdência Social (RGPS).',
       order: 2,
-  }, });
+    },
+  });
 
   console.log('Seeding finished.');
 }

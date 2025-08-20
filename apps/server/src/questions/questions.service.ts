@@ -55,8 +55,11 @@ export class QuestionsService {
 
     let isCorrect = false;
     if (question.type === 'CERTO_ERRADO') {
-      isCorrect = String(userAnswer) === String(question.isCorrect);
-    } else if (question.type === 'MULTIPLA_ESCOLHA') {
+      const userAnswerAsBoolean = userAnswer === 'true';
+      isCorrect = userAnswerAsBoolean === question.isCorrect;
+    }
+    
+    else if (question.type === 'MULTIPLA_ESCOLHA') {
       const options = question.options as Prisma.JsonObject;
       isCorrect = userAnswer === options.answer;
     }

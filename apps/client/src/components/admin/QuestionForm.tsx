@@ -74,7 +74,6 @@ export function QuestionForm({ blocks, onSave, initialData }: QuestionFormProps)
 
   return (
     <form onSubmit={handleSubmit(onSave)} className="space-y-6">
-      {/* Bloco, Tipo e Dificuldade */}
       <div className="grid md:grid-cols-3 gap-4">
         <div>
           <Label htmlFor="blockId">Bloco de Estudo</Label>
@@ -110,17 +109,31 @@ export function QuestionForm({ blocks, onSave, initialData }: QuestionFormProps)
       {questionType === 'CERTO_ERRADO' && (
         <div>
           <Label>Resposta Correta</Label>
-            <div className="flex gap-4 mt-2">
-                 <div className="flex items-center gap-2">
-                    <input type="radio" id="isCorrect-true" value="true" {...register('isCorrect', { setValueAs: v => v === 'true' })} />
-                    <Label htmlFor="isCorrect-true">Certo</Label>
-                 </div>
-                 <div className="flex items-center gap-2">
-                    <input type="radio" id="isCorrect-false" value="false" {...register('isCorrect', { setValueAs: v => v === 'true' })}/>
-                    <Label htmlFor="isCorrect-false">Errado</Label>
-                 </div>
+          <div className="flex gap-4 mt-2">
+            <div className="flex items-center gap-2">
+              <input
+                type="radio"
+                id="isCorrect-true"
+                value="true"
+                {...register('isCorrect', { setValueAs: (v) => v === 'true' })}
+              />
+              <Label htmlFor="isCorrect-true">Certo</Label>
             </div>
-          {errors.isCorrect && <p className="text-xs text-destructive mt-1">{errors.isCorrect.message}</p>}
+            <div className="flex items-center gap-2">
+              <input
+                type="radio"
+                id="isCorrect-false"
+                value="false"
+                {...register('isCorrect', { setValueAs: (v) => v === 'true' })}
+              />
+              <Label htmlFor="isCorrect-false">Errado</Label>
+            </div>
+          </div>
+          {errors.isCorrect && (
+            <p className="text-xs text-destructive mt-1">
+              {errors.isCorrect.message}
+            </p>
+          )}
         </div>
       )}
 

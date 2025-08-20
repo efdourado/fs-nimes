@@ -1,6 +1,11 @@
+'use client';
+
 import Link from 'next/link';
-import { CheckCircle, Award } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
 import type { BlockData } from './StudyBlockCard';
 
 interface StudyCompletionCardProps {
@@ -8,10 +13,29 @@ interface StudyCompletionCardProps {
 }
 
 export function StudyCompletionCard({ blockData }: StudyCompletionCardProps) {
+  const router = useRouter();
+  const [isRestarting, setIsRestarting] = useState(false);
   const { title, totalQuestions } = blockData;
   const { correctAnswers, wrongAnswers } = blockData.userStatus;
   const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
   const isApproved = accuracy >= 70;
+
+  const handleRestart = async () => {
+    setIsRestarting(true);
+    const token = localStorage.getItem('accessToken');
+    try {
+      await api.post(`/study-blocks/${blockData.id}/start`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      router.push(`/study-blocks/${blockData.id}`);
+    } catch (error) {
+      console.error('Falha ao reiniciar o bloco', error);
+      alert('Não foi possível reiniciar o bloco de estudos. Tente novamente.');
+    } finally {
+      setIsRestarting(false);
+    }
+  };
+
 
   return (
     <div className="w-full p-8 rounded-xl border bg-card text-card-foreground shadow-lg text-center">
@@ -45,12 +69,13 @@ export function StudyCompletionCard({ blockData }: StudyCompletionCardProps) {
       )}
 
       <div className="flex justify-center gap-4">
-        <Button variant="outline" asChild>
-          <Link href={`/study-blocks/${blockData.id}`}>Tentar Novamente</Link>
+        <Button variant="outline" onClick={handleRestart} disabled={isRestarting}>
+          {isRestarting ? 'Reiniciando...' : 'Tentar Novamente'}
         </Button>
         <Button asChild>
           <Link href="/study-blocks">Voltar aos Blocos</Link>
         </Button>
       </div>
     </div>
-); }
+  );
+}
