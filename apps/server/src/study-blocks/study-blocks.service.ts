@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../core/prisma.service';
 
 @Injectable()
@@ -38,4 +38,51 @@ export class StudyBlocksService {
     }, }; });
 
     return result;
+  }
+
+  async startOrRestartBlock(userId: string, blockId: string) {
+    const block = await this.prisma.studyBlock.findUnique({
+      where: { id: blockId },
+    });
+
+    if (!block) {
+      throw new NotFoundException('Bloco de estudo não encontrado.');
+    }
+
+    if (block.order > 1) {
+      const previousBlock = await this.prisma.studyBlock.findUnique({
+        where: { order: block.order - 1 },
+      });
+      if (previousBlock) {
+        const previousProgress = await this.prisma.userProgress.findUnique({
+          where: { userId_blockId: { userId, blockId: previousBlock.id } },
+        });
+        if (!previousProgress?.completed) {
+          throw new UnauthorizedException('Você precisa completar o bloco anterior primeiro.');
+    } } }
+    
+    await this.prisma.userAnswer.deleteMany({
+      where: {
+        userId,
+        question: {
+          blockId,
+    }, }, });
+
+    const progress = await this.prisma.userProgress.upsert({
+      where: { userId_blockId: { userId, blockId } },
+      create: {
+        userId,
+        blockId,
+        unlocked: true,
+        completed: false,
+        correct: 0,
+        wrong: 0,
+      },
+      update: {
+        completed: false,
+        correct: 0,
+        wrong: 0,
+    }, });
+
+    return { message: 'Bloco iniciado com sucesso. Você pode começar a responder as questões.' };
 } }

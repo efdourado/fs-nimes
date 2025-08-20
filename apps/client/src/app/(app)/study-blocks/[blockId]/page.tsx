@@ -52,6 +52,16 @@ export default function StudySessionPage() {
     fetchQuestions();
   }, [fetchQuestions]);
 
+  const handleNextQuestion = useCallback(() => {
+    setFeedback(null);
+    setSelectedAnswer(null);
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      router.push(`/study-blocks/${blockId}/complete`);
+    }
+  }, [currentQuestionIndex, questions.length, router, blockId]);
+
   const handleSubmit = async () => {
     if (!selectedAnswer) return;
     setIsSubmitting(true);
@@ -64,27 +74,26 @@ export default function StudySessionPage() {
         { headers: { Authorization: `Bearer ${token}` } },
       );
       setFeedback(data);
-    } catch (error) {
-      console.error('Falha ao submeter resposta', error);
-
-      if ((error as any).response?.data?.message) {
-        alert((error as any).response.data.message);
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        setFeedback({ 
+          correct: false, 
+          explanation: 'Você já respondeu esta questão anteriormente. Avançando para a próxima.' 
+        });
+        setTimeout(() => {
+          handleNextQuestion();
+        }, 2000);
+      } else {
+        console.error('Falha ao submeter resposta', error);
+        alert(error.response?.data?.message || 'Ocorreu um erro ao enviar sua resposta.');
       }
     } finally {
       setIsSubmitting(false);
   } };
 
-  const handleNextQuestion = () => {
-    setFeedback(null);
-    setSelectedAnswer(null);
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      router.push(`/study-blocks/${blockId}/complete`);
-  } };
 
   if (isLoading) return <div className="flex justify-center items-center h-full"><p>Carregando questões...</p></div>;
-  if (questions.length === 0) return <div className="flex justify-center items-center h-full"><p>Nenhuma questão encontrada para este bloco.</p></div>;
+  if (!questions || questions.length === 0) return <div className="flex justify-center items-center h-full"><p>Nenhuma questão encontrada para este bloco.</p></div>;
 
   const currentQuestion = questions[currentQuestionIndex];
   const isAnswered = feedback !== null;
@@ -101,7 +110,7 @@ export default function StudySessionPage() {
         onAnswerChange={setSelectedAnswer}
         isAnswered={isAnswered}
       />
-      {isAnswered && <FeedbackAlert feedback={feedback} />}
+      {feedback && <FeedbackAlert feedback={feedback} />}
       <StudyControls
         isAnswered={isAnswered}
         isSubmitting={isSubmitting}
