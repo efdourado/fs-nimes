@@ -13,11 +13,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { QuestionsService } from './questions.service';
-import { CreateQuestionDto, UpdateQuestionDto } from './dto/question.dto';
-
-class AnswerDto {
-  answer: string | boolean;
-}
+import { CreateQuestionDto, UpdateQuestionDto, AnswerDto } from './dto/question.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('questions')

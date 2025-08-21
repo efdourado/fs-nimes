@@ -55,12 +55,11 @@ export class QuestionsService {
 
     let isCorrect = false;
     if (question.type === 'CERTO_ERRADO') {
-      const userAnswerAsBoolean = userAnswer === 'true' || userAnswer === true;
-      
+      const userAnswerAsBoolean = String(userAnswer) === 'true';
       isCorrect = userAnswerAsBoolean === question.isCorrect;
     } else if (question.type === 'MULTIPLA_ESCOLHA') {
-      const options = question.options as Prisma.JsonObject;
-      isCorrect = userAnswer === question.answer;
+      const correctAnswer = (question.options as Prisma.JsonObject)?.answer as string;
+      isCorrect = userAnswer === correctAnswer;
     }
 
     await this.prisma.userAnswer.create({
@@ -68,8 +67,7 @@ export class QuestionsService {
         userId,
         questionId,
         isCorrect,
-      },
-    });
+    }, });
 
     const userProgress = await this.prisma.userProgress.upsert({
       where: { userId_blockId: { userId, blockId: question.blockId } },

@@ -67,6 +67,7 @@ export default function StudySessionPage() {
     setIsSubmitting(true);
     const token = localStorage.getItem('accessToken');
     const currentQuestion = questions[currentQuestionIndex];
+
     try {
       const { data } = await api.post(
         `/questions/${currentQuestion.id}/answer`,
@@ -75,6 +76,8 @@ export default function StudySessionPage() {
       );
       setFeedback(data);
     } catch (error: any) {
+
+
       if (error.response?.status === 409) {
         setFeedback({ 
           correct: false, 

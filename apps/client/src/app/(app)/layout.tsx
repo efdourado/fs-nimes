@@ -3,6 +3,8 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Footer } from "@/components/layout/Footer";
+import { AppHeader } from "@/components/layout/AppHeader";
 
 export default function AppLayout({
   children,
@@ -29,12 +31,14 @@ export default function AppLayout({
   ); }
 
   return (
-    <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
       <Sidebar />
       <div className="flex flex-col">
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
+        <AppHeader />
+        <main className="flex flex-1 flex-col gap-4 p-4 pb-24 md:gap-8 md:p-6 md:pb-6">
           {children}
         </main>
       </div>
+      <Footer />
     </div>
 ); }

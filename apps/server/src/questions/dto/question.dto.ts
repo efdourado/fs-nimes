@@ -11,6 +11,11 @@ import {
 import { Type } from 'class-transformer';
 import { QuestionType, Difficulty } from '@prisma/client';
 
+export class AnswerDto {
+  @IsNotEmpty({ message: 'A resposta não pode ser vazia.' })
+  answer: string | boolean;
+}
+
 class MultipleChoiceOptionsDto {
   @IsNotEmpty()
   @IsString({ each: true })

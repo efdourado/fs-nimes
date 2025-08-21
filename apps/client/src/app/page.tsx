@@ -5,9 +5,7 @@ export default function HomePage() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background">
       <div className="absolute inset-0 z-0 bg-gradient-to-br from-background via-slate-100/5 to-background dark:via-slate-900/10" />
-      <div className="absolute inset-0 z-10 bg-[url('/grid.svg')] [mask-image:linear-gradient(to_bottom,white_5%,transparent_80%)] dark:invert" />
-
-      <div className="container relative z-20 flex flex-col items-center text-center px-4">
+      <div className="container relative z-20 flex flex-col items-center px-4 text-center">
         <h1 className="text-4xl font-black tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
           Domine o Direito Previdenciário
         </h1>
