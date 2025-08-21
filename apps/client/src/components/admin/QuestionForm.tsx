@@ -124,7 +124,7 @@ export function QuestionForm({ blocks, onSave, initialData }: QuestionFormProps)
                 type="radio"
                 id="isCorrect-false"
                 value="false"
-                {...register('isCorrect', { setValueAs: (v) => v === 'true' })}
+                {...register('isCorrect', { setValueAs: (v) => v === 'false' })}
               />
               <Label htmlFor="isCorrect-false">Errado</Label>
             </div>

@@ -11,8 +11,7 @@ async function main() {
       title: 'Princípios e Conceitos',
       description: 'Fundamentos do Direito Previdenciário e da Seguridade Social.',
       order: 1,
-    },
-  });
+  }, });
 
   await prisma.question.createMany({
     data: [
@@ -41,21 +40,18 @@ async function main() {
         difficulty: 'FACIL',
         options: {
           options: ['Seletividade e distributividade', 'Irredutibilidade do valor dos benefícios', 'Caráter democrático da gestão', 'Princípio da rentabilidade'],
+          answer: 'Princípio da rentabilidade',
         },
-        answer: 'Princípio da rentabilidade',
         explanation: 'A rentabilidade é um princípio do mercado financeiro, não da Seguridade Social, que se baseia na solidariedade social.',
         isCorrect: null,
-      },
-    ],
-  });
+  }, ], });
 
   const block2 = await prisma.studyBlock.create({
     data: {
       title: 'Segurados e Dependentes',
       description: 'Quem são os beneficiários do Regime Geral de Previdência Social (RGPS).',
       order: 2,
-    },
-  });
+  }, });
 
   console.log('Seeding finished.');
 }

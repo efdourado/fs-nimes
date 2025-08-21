@@ -55,13 +55,12 @@ export class QuestionsService {
 
     let isCorrect = false;
     if (question.type === 'CERTO_ERRADO') {
-      const userAnswerAsBoolean = userAnswer === 'true';
+      const userAnswerAsBoolean = userAnswer === 'true' || userAnswer === true;
+      
       isCorrect = userAnswerAsBoolean === question.isCorrect;
-    }
-    
-    else if (question.type === 'MULTIPLA_ESCOLHA') {
+    } else if (question.type === 'MULTIPLA_ESCOLHA') {
       const options = question.options as Prisma.JsonObject;
-      isCorrect = userAnswer === options.answer;
+      isCorrect = userAnswer === question.answer;
     }
 
     await this.prisma.userAnswer.create({
@@ -69,7 +68,8 @@ export class QuestionsService {
         userId,
         questionId,
         isCorrect,
-    }, });
+      },
+    });
 
     const userProgress = await this.prisma.userProgress.upsert({
       where: { userId_blockId: { userId, blockId: question.blockId } },
@@ -89,7 +89,10 @@ export class QuestionsService {
         block: {
           include: {
             _count: { select: { questions: true } },
-    }, }, }, });
+          },
+        },
+      },
+    });
 
     const totalAnswered = userProgress.correct + userProgress.wrong;
     const totalQuestionsInBlock = userProgress.block._count.questions;
@@ -111,12 +114,16 @@ export class QuestionsService {
             where: { userId_blockId: { userId, blockId: nextBlock.id } },
             create: { userId, blockId: nextBlock.id, unlocked: true },
             update: { unlocked: true },
-    }); } } }
+          });
+        }
+      }
+    }
 
     return {
       correct: isCorrect,
       explanation: question.explanation,
-  }; }
+    };
+  }
 
   async create(createQuestionDto: CreateQuestionDto) {
     const { blockId, ...questionData } = createQuestionDto;
