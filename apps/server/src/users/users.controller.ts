@@ -1,11 +1,7 @@
-import { Controller, Get, UseGuards, Req, Body, Put } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Body, Put, HttpCode, HttpStatus } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
-
-class UpdateProfileDto {
-  name: string;
-  bio: string;
-}
+import { UpdateProfileDto, UpdateAvatarDto } from './dto/user.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -20,4 +16,10 @@ export class UsersController {
   @Put('me')
   updateProfile(@Req() req, @Body() data: UpdateProfileDto) {
     return this.usersService.update(req.user.userId, data);
+  }
+
+  @Put('me/avatar')
+  @HttpCode(HttpStatus.OK)
+  updateAvatar(@Req() req, @Body() data: UpdateAvatarDto) {
+    return this.usersService.updateAvatar(req.user.userId, data.profileImage);
 } }

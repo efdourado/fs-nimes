@@ -16,8 +16,7 @@ export type BlockData = {
     completed: boolean;
     correctAnswers: number;
     wrongAnswers: number;
-  };
-};
+}; };
 
 interface StudyBlockCardProps {
   block: BlockData;
@@ -52,32 +51,36 @@ export function StudyBlockCard({ block }: StudyBlockCardProps) {
     <div
       onClick={handleStart}
       className={cn(
-        'group p-6 rounded-lg border bg-card text-card-foreground shadow-sm transition-all',
+        'group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-md transition-all duration-300',
         !unlocked
-          ? 'opacity-50 cursor-not-allowed'
-          : 'cursor-pointer hover:border-primary/80 hover:-translate-y-1'
+          ? 'opacity-60 cursor-not-allowed bg-muted/50'
+          : 'cursor-pointer hover:border-primary/80 hover:shadow-lg hover:-translate-y-1'
       )}
     >
-      <div className="flex justify-between items-start">
-        <h2 className="text-xl font-bold">{block.title}</h2>
-        {completed ? (
-          <CheckCircle className="h-6 w-6 text-green-500" />
-        ) : !unlocked ? (
-          <Lock className="h-6 w-6 text-muted-foreground" />
-        ) : (
-          <Play className="h-6 w-6 text-muted-foreground transition-transform group-hover:scale-125 group-hover:text-primary" />
-        )}
+      <div className="p-6">
+        <div className="flex justify-between items-start">
+          <h2 className="text-xl font-bold pr-8">{block.title}</h2>
+          <div className="flex-shrink-0">
+            {completed ? (
+              <CheckCircle className="h-6 w-6 text-green-500" />
+            ) : !unlocked ? (
+              <Lock className="h-6 w-6 text-muted-foreground" />
+            ) : (
+              <Play className="h-6 w-6 text-muted-foreground transition-transform group-hover:scale-125 group-hover:text-primary" />
+            )}
+          </div>
+        </div>
+        <p className="text-muted-foreground mt-2 min-h-[40px] text-sm">{block.description}</p>
       </div>
-      <p className="text-muted-foreground mt-2 min-h-[40px]">{block.description}</p>
       {unlocked && (
-        <div className="mt-4">
-          <div className="flex justify-between text-sm text-muted-foreground mb-1">
+        <div className="px-6 pb-4 mt-2">
+          <div className="flex justify-between text-xs text-muted-foreground mb-1">
             <span>Progresso</span>
             <span>{Math.round(progressPercentage)}%</span>
           </div>
-          <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
+          <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
             <div
-              className="bg-primary h-2.5 rounded-full transition-all"
+              className="bg-primary h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>

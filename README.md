@@ -123,24 +123,39 @@ Siga os passos abaixo para configurar e rodar o ambiente de desenvolvimento loca
 -   [x] **Conteúdo Inicial:** Script de *seeding* para popular o banco com blocos e questões.
 -   [x] **Perfil de Usuário:** Visualização e edição de nome e bio.
 -   [x] **Modo Noturno:** Implementação de tema claro/escuro com `next-themes`.
+-   [x] **Layout Principal:** Header e Sidebar persistentes em todas as telas da aplicação.
 -   [x] **Fluxo de Estudo Completo:**
     -   [x] Listagem de Blocos com status (bloqueado, desbloqueado, completo) e progresso.
     -   [x] Interface para responder questões.
     -   [x] Feedback de respostas (certo/errado com explicação).
     -   [x] Sistema de progressão e desbloqueio de novos blocos.
     -   [x] Página de conclusão de bloco com resultados.
+-   [x] **Dashboard de Desempenho v1:**
+    -   [x] Endpoint de estatísticas no backend.
+    -   [x] Exibição de aproveitamento, blocos concluídos e atalho para continuar estudando.
 -   [x] **Gerenciamento de Questões (Admin):**
     -   [x] Interface para listar, criar, editar e deletar questões.
 
 ### 🎯 Próximos Passos
 
--   [ ] **Dashboard de Desempenho:** Aprimorar o dashboard com gráficos e estatísticas detalhadas do progresso do usuário.
--   [ ] **Simulado Final:** Geração de um simulado cronometrado com questões de todos os blocos.
--   [ ] **Certificado:** Geração automática de um certificado de conclusão após aprovação no simulado.
--   [ ] **Filtro de Questões:** Permitir que o usuário filtre questões por dificuldade ou tema.
--   [ ] **Upload de Foto de Perfil:** Implementar a lógica de upload e armazenamento da imagem do usuário.
+-   [ ] **Upload de Foto de Perfil:**
+    -   **O quê:** Permitir que o usuário envie uma imagem para seu perfil.
+    -   **Como:** Utilizar um serviço de armazenamento de terceiros (ex: AWS S3, Cloudinary). O frontend fará o upload diretamente para o serviço, que retornará uma URL. Essa URL será enviada ao backend para ser salva no campo `profileImage` do usuário.
+
+-   [ ] **Simulado Final:**
+    -   **O quê:** Gerar um simulado cronometrado com questões de todos os blocos após a conclusão de todos eles.
+    -   **Como:** Criar um endpoint para selecionar questões aleatórias. A interface do simulado (`/simulation/start`) terá um cronômetro e, ao final, salvará o resultado na tabela `Simulation`.
+
+-   [ ] **Geração de Certificado:**
+    -   **O quê:** Gerar um certificado de conclusão após a aprovação no simulado final.
+    -   **Como:** Criar uma nova página (`/certificate/[simulationId]`) que renderize o certificado. Utilizar uma biblioteca como `react-pdf` para permitir o download em PDF.
+
+-   [ ] **Melhorias no Dashboard:**
+    -   **O quê:** Adicionar visualizações gráficas das estatísticas.
+    -   **Como:** Integrar uma biblioteca de gráficos (ex: Recharts, Chart.js) para exibir o aproveitamento ao longo do tempo ou por bloco de estudo.
 
 ### 🚀 Futuro
 
--   [ ] **Integração com IA:** Geração de novas questões sob demanda usando uma API de IA.
--   [ ] **Sistema de Roles:** Distinguir usuários normais de administradores no backend.
+-   [ ] **Filtro de Questões:** Permitir que o usuário filtre questões por dificuldade ou tema para revisões personalizadas.
+-   [ ] **Sistema de Roles:** Distinguir formalmente usuários (`USER`) de administradores (`ADMIN`) no backend para um controle de acesso mais robusto.
+-   [ ] **Integração com IA:** Explorar a geração de novas questões ou explicações alternativas usando APIs de modelos de linguagem.
