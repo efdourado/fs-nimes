@@ -1,0 +1,42 @@
+# docker-compose.yml
+
+services:
+  db:
+    # ... (sem mudanças)
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nimes_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://user:password@db:5432/nimes_db?schema=public"
+      JWT_SECRET: "SEU_SEGREDO_SUPER_SECRETO_AQUI"
+
+  client:
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile
+    ports:
+      - "3001:3000"
+    depends_on:
+      - server
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      PORT: 3000
+
+volumes:
+  postgres_data:
