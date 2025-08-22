@@ -1,8 +1,5 @@
-# docker-compose.yml
-
 services:
   db:
-    # ... (sem mudanças)
     image: postgres:15
     restart: always
     environment:
